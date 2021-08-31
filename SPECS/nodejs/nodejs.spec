@@ -1,7 +1,13 @@
+# Found in tarball in deps/npm/package.json
+%global npm_major 6
+%global npm_minor 14
+%global npm_patch 13
+%global npm_version %{npm_major}.%{npm_minor}.%{npm_patch}
+
 Summary:        A JavaScript runtime built on Chrome's V8 JavaScript engine.
 Name:           nodejs
 Version:        14.17.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        BSD and MIT and Public Domain and naist-2003
 Group:          Applications/System
 Vendor:         Microsoft Corporation
@@ -16,6 +22,7 @@ BuildRequires:  which
 Requires:       coreutils >= 8.22
 Requires:       openssl >= 1.0.1
 Requires:       python3
+Provides:       npm = %{npm_version}
 
 %description
 Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient. The Node.js package ecosystem, npm, is the largest ecosystem of open source libraries in the world.
@@ -73,6 +80,8 @@ make cctest
 %{_datadir}/systemtap/tapset/node.stp
 
 %changelog
+*   Tue Aug 31 2021 Mateusz Malisz <mamalisz@microsoft.com> - 14.17.2-2
+-   Add explicit provides for npm
 *   Mon Jul 19 2021 Neha Agarwal <nehaagarwal@microsoft.com> - 14.17.2-1
 -   Update to version 14.17.2 to fix CVE-2021-22918
 *   Mon Jun 07 2021 Henry Beberman <henry.beberman@microsoft.com> - 14.17.0-1
