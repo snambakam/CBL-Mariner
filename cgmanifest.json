@@ -8215,7 +8215,7 @@
         "type": "other",
         "other": {
           "name": "tboot",
-          "version": "1.9.12",
+          "version": "1.10.2",
           "downloadUrl": "http://downloads.sourceforge.net/tboot/tboot-1.9.12.tar.gz"
         }
       }

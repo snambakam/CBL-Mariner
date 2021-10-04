@@ -4,7 +4,7 @@
 Summary:        Utilities from the general purpose cryptography library with TLS implementation
 Name:           openssl
 Version:        1.1.1k
-Release:        8%{?dist}
+Release:        9%{?dist}
 License:        OpenSSL
 Vendor:         Microsoft Corporation
 Distribution:   Mariner
@@ -190,7 +190,6 @@ export HASHBANGPERL=%{_bindir}/perl
     no-seed \
     no-siphash \
     no-sm2 \
-    no-sm3 \
     no-sm4 \
     no-ssl \
     no-ssl3 \
