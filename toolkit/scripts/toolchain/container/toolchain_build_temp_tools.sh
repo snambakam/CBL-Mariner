@@ -106,6 +106,8 @@ cd       build
     --with-local-prefix=/tools                     \
     --with-native-system-header-dir=/tools/include \
     --disable-nls                                  \
+    --enable-initfini-array                        \
+    --disable-bootstrap                            \
     --disable-shared                               \
     --disable-multilib                             \
     --disable-decimal-float                        \
@@ -187,7 +189,7 @@ cd       build
     --disable-libstdcxx-pch         \
     --with-gxx-include-dir=/tools/$LFS_TGT/include/c++/11.2.0
 make -j$(nproc)
-make install
+make DESTDIR=$LFS install
 popd
 rm -rf gcc-11.2.0
 
@@ -269,22 +271,31 @@ tar -xf ../mpc-1.1.0.tar.gz
 mv -v mpc-1.1.0 mpc
 mkdir -v build
 cd       build
-CC=$LFS_TGT-gcc                                    \
-CXX=$LFS_TGT-g++                                   \
-AR=$LFS_TGT-ar                                     \
-RANLIB=$LFS_TGT-ranlib                             \
+mkdir -pv $LFS_TGT/libgcc
+ln -s ../../../libgcc/gthr-posix.h $LFS_TGT/libgcc/gthr-default.h
 ../configure                                       \
     --prefix=/tools                                \
     --with-local-prefix=/tools                     \
     --with-native-system-header-dir=/tools/include \
     --enable-languages=c,c++                       \
+    --with-gxx-include-dir=/tools/$LFS_TGT/include/c++/11.2.0 \
+    --with-build-sysroot=$LFS                      \
     --disable-libstdcxx-pch                        \
     --disable-multilib                             \
     --disable-bootstrap                            \
-    --disable-libgomp
+    --disable-libgomp                              \
+    --enable-initfini-array                        \
+    --disable-nls                                  \
+    --disable-decimal-float                        \
+    --disable-libatomic                            \
+    --disable-libquadmath                          \
+    --disable-libssp                               \
+    --disable-libvtv                               \
+    --disable-libstdcxx
 make -j$(nproc)
 make install
 ln -sv gcc /tools/bin/cc
+ln -svf /tools/lib/ld-linux-x86-64.so.2 /tools/lib64/ld-linux-x86-64.so.2
 # Sanity check
 set +e
 echo sanity check - temptoolchain - gcc 11.2.0 pass2
