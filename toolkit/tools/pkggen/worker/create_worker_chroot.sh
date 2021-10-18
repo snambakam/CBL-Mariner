@@ -54,6 +54,21 @@ while read -r package || [ -n "$package" ]; do
     install_one_toolchain_rpm "$package"
 done < "$packages"
 
+chroot $chroot_builder_folder ls /var/lib/rpm
+chroot $chroot_builder_folder rm -rf /var/lib/rpm
+chroot $chroot_builder_folder mkdir /var/lib/rpm
+chroot $chroot_builder_folder rpm --initdb
+
+while read -r package || [ -n "$package" ]; do
+    full_rpm_path=$(find "$rpm_path" -name "$package" -type f 2>>"$chroot_log")
+    package_rpm_name=$(basename $full_rpm_path)
+    cp $full_rpm_path $chroot_builder_folder/$package_rpm_name
+    #chroot $chroot_builder_folder ls
+    #chroot $chroot_builder_folder rpm -i -v --nodeps --noscripts --notriggers --excludepath / $package_rpm_name
+    chroot $chroot_builder_folder rpm -i -v --replacefiles --nodeps --noscripts --notriggers --excludepath / $package_rpm_name
+    chroot $chroot_builder_folder rm $package_rpm_name
+done < "$packages"
+
 HOME=$ORIGINAL_HOME
 
 # In case of Docker based build do not add the below folders into chroot tarball 
@@ -65,6 +80,8 @@ if [[ -f "$DOCKERCONTAINERONLY" ]]; then
     rm -rf "${chroot_base:?}/$chroot_name"/run
     rm -rf "${chroot_base:?}/$chroot_name"/sys
 fi
+
+
 
 echo "Done installing all packages, creating $chroot_archive." | tee -a "$chroot_log"
 if command -v pigz &>/dev/null ; then
